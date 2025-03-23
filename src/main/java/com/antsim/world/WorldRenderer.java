@@ -1,25 +1,47 @@
 package com.antsim.world;
 
+import com.antsim.creatures.Creature;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+import com.antsim.creatures.ants.QueenAnt;
+import com.antsim.creatures.enemies.Spider;
+
 
 public class WorldRenderer {
     static {
         AnsiConsole.systemInstall(); // Инициализация Jansi
     }
 
-    public void drawMap(WorldMap map) {
+    public void drawMap(WorldMap map, GameWorld gameWorld) {
         Ansi buffer = Ansi.ansi();
-        
+
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
-                TileType tile = map.getTile(x, y);
-                buffer.a(getTileSymbol(tile)).fg(getTileColor(tile));
+                // Проверяем, есть ли существо на этой клетке
+                Creature creature = getCreatureAt(gameWorld, x, y);
+
+                if (creature != null) {
+                    // Отрисовываем существо
+                    buffer.a(getCreatureSymbol(creature)).fg(getCreatureColor(creature));
+                } else {
+                    // Отрисовываем тайл
+                    TileType tile = map.getTile(x, y);
+                    buffer.a(getTileSymbol(tile)).fg(getTileColor(tile));
+                }
             }
             buffer.newline();
         }
-        
+
         System.out.println(buffer);
+    }
+
+    private Creature getCreatureAt(GameWorld gameWorld, int x, int y) {
+        for (Creature creature : gameWorld.getCreatures()) {
+            if (creature.getPosition().x == x && creature.getPosition().y == y) {
+                return creature;
+            }
+        }
+        return null;
     }
 
     private Ansi.Color getTileColor(TileType tile) {
@@ -42,5 +64,23 @@ public class WorldRenderer {
             case FOOD -> "🍎";
             default -> "??";
         };
+    }
+
+    private Ansi.Color getCreatureColor(Creature creature) {
+        if (creature instanceof QueenAnt) {
+            return Ansi.Color.MAGENTA; // Матка
+        } else if (creature instanceof Spider) {
+            return Ansi.Color.RED; // Враг
+        }
+        return Ansi.Color.WHITE; // Другие существа
+    }
+
+    private String getCreatureSymbol(Creature creature) {
+        if (creature instanceof QueenAnt) {
+            return "Q "; // Матка
+        } else if (creature instanceof Spider) {
+            return "S "; // Враг
+        }
+        return "? "; // Другие существа
     }
 }

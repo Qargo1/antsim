@@ -1,5 +1,4 @@
 package com.antsim.creatures.enemies;
-
 // Базовый класс врага
 import com.antsim.creatures.ants.Ant;
 import com.antsim.creatures.Creature;

@@ -1,19 +1,20 @@
 package com.antsim;
 
+import com.antsim.systems.GameLoop;
+import com.antsim.world.GameWorld;
 import com.antsim.world.WorldMap;
 import com.antsim.world.WorldRenderer;
 
 public class Main {
     public static void main(String[] args) {
-        WorldMap map = new WorldMap(20, 20);
+        WorldMap map = new WorldMap(40, 20);
         WorldRenderer renderer = new WorldRenderer();
-        
-        // Прорыть тестовый туннель
-        /*
-        map.digTunnel(10, 10);
-        map.digTunnel(10, 11);
-        */
-        
-        renderer.drawMap(map);
+        GameWorld gameWorld = new GameWorld();
+
+        // Создаем игровой цикл
+        GameLoop gameLoop = new GameLoop(map, renderer, gameWorld);
+
+        // Запуск игры
+        gameLoop.start();
     }
 }

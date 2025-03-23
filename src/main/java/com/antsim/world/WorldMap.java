@@ -1,6 +1,6 @@
 package com.antsim.world;
-import java.util.Random;
 
+import java.util.Random;
 
 public class WorldMap {
     private TileType[][] tiles;
@@ -12,51 +12,71 @@ public class WorldMap {
         this.width = width;
         this.height = height;
         tiles = new TileType[width][height];
-        generateInitialAntMap();
-        generateInitialMap(); // Теперь оба метода работают
-    }
-
-    private void generateInitialAntMap() {
-        // Центр муравейника
-        int centerX = width / 2;
-        int centerY = height / 2;
-        
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                // 3x3 область вокруг центра - вход
-                if (Math.abs(x - centerX) <= 1 && Math.abs(y - centerY) <= 1) {
-                    tiles[x][y] = TileType.GROUND;
-                } else {
-                    tiles[x][y] = TileType.WALL;
-                }
-            }
-        }
+        generateInitialMap();
     }
 
     private void generateInitialMap() {
-        // Заполняем периметр травой для теста
+        // Размеры муравейника (40% от карты)
+        int anthillWidth = (int) (width * 0.4);
+        int anthillHeight = (int) (height * 0.4);
+
+        // Центр муравейника
+        int centerX = width / 2;
+        int centerY = height / 2;
+
+        // Границы муравейника
+        int anthillStartX = centerX - anthillWidth / 2;
+        int anthillStartY = centerY - anthillHeight / 2;
+        int anthillEndX = anthillStartX + anthillWidth;
+        int anthillEndY = anthillStartY + anthillHeight;
+
+        // Заполняем карту
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (tiles[x][y] == null) { // Если не муравейник
-                    tiles[x][y] = TileType.GROUND;
+                // Если внутри муравейника
+                if (x >= anthillStartX && x < anthillEndX && 
+                    y >= anthillStartY && y < anthillEndY) {
+                    tiles[x][y] = TileType.WALL; // Стены муравейника
+                } else {
+                    tiles[x][y] = TileType.GROUND; // Трава снаружи
                 }
+            }
+        }
+
+        // Квадрат для спавна матки (5x5 в центре муравейника)
+        int spawnSize = 5;
+        int spawnStartX = centerX - spawnSize / 2;
+        int spawnStartY = centerY - spawnSize / 2;
+
+        for (int x = spawnStartX; x < spawnStartX + spawnSize; x++) {
+            for (int y = spawnStartY; y < spawnStartY + spawnSize; y++) {
+                tiles[x][y] = TileType.GROUND; // Пустое место для матки
             }
         }
     }
 
-    // Исправленный метод
+    public boolean isDiggable(int x, int y) {
+        return tiles[x][y] == TileType.WALL;
+    }
+
+    public void digTunnel(int x, int y) {
+        if (isDiggable(x, y)) {
+            tiles[x][y] = TileType.TUNNEL;
+        }
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
     public TileType getTile(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             return TileType.WALL; // Границы карты
         }
         return tiles[x][y];
-    }
-
-    public int getHeight() {
-        return this.height;
-    }
-
-    public int getWidth() {
-        return this.width;
     }
 }
