@@ -1,13 +1,15 @@
 package com.antsim.creatures.ants;
 import com.antsim.creatures.Creature;
+
 import java.util.Random;
+import lombok.Getter;
 
 
 public abstract class Ant extends Creature{
     protected Random random = new Random();
-    protected float hunger;
-    protected float thirst;
-    String antType;
+    protected @Getter float hunger;
+    protected @Getter float thirst;
+    protected @Getter String antType;
 
     public Ant(Float attack, Float defense, String antType) {
         super();
@@ -38,30 +40,6 @@ public abstract class Ant extends Creature{
         return stats;
     }
 
-    public float getHealth() {
-        return this.health;
-    }
-
-    public float getAttack() {
-        return this.attack;
-    }
-
-    public float getDefense() {
-        return this.defense;
-    }
-
-    public float getHunger() {
-        return this.hunger;
-    }
-
-    public float getThirst() {
-        return this.thirst;
-    }
-
-    public String getType() {
-        return this.antType;
-    }
-
     public void setHealth(double multiplayer) {
         this.health *= multiplayer;
     }
@@ -83,5 +61,6 @@ public abstract class Ant extends Creature{
     }
 
     // abstract must go before void
+    @Override
     public abstract void update();
 }

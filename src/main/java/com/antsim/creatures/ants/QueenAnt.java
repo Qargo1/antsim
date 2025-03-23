@@ -1,43 +1,59 @@
 package com.antsim.creatures.ants;
+
 import java.awt.Point;
 import java.util.Random;
+import com.antsim.world.GameWorld;
 
 
-public class QueenAnt extends Ant{
-    boolean isLayedEgg = true;
+public class QueenAnt extends Ant {
+    private static final Random random = new Random();
+    private int eggCooldown;
+    private GameWorld gameWorld;
 
-    public QueenAnt(Point position) {
-        // Генерация attack: 10-30, defense: 80-90
+    public QueenAnt(Point position, GameWorld gameWorld) {
         super(
-            new Random().nextFloat() * 20 + 10, // 10 + [0..20)
-            new Random().nextFloat() * 10 + 80,  // 80 + [0..10)
+            random.nextFloat() * 20 + 10, // 10-30
+            random.nextFloat() * 10 + 80,  // 80-90
             "queen"
         );
         this.position = position;
         this.health = 100;
-        this.attack = 10;
-        this.defense = 50;
+        this.eggCooldown = random.nextInt(20) + 10;
+        this.gameWorld = gameWorld;
     }
 
-    public QueenAnt() {
-        // Генерация attack: 10-30, defense: 80-90
+    public QueenAnt(Point position) {
         super(
-            new Random().nextFloat() * 20 + 10, // 10 + [0..20)
-            new Random().nextFloat() * 10 + 80,  // 80 + [0..10)
+            random.nextFloat() * 20 + 10, // 10-30
+            random.nextFloat() * 10 + 80,  // 80-90
             "queen"
         );
+        this.position = position;
         this.health = 100;
-        this.attack = 10;
-        this.defense = 50;
+        this.eggCooldown = random.nextInt(20) + 10;
     }
 
     @Override
     public void update() {
-        if (this.isLayedEgg) {
-            hunger -= 0.4f;
-            thirst -= 0.6f;
-        }
         hunger -= 0.2f;
         thirst -= 0.3f;
+
+        if (eggCooldown <= 0) {
+            layEgg();
+            eggCooldown = random.nextInt(20) + 10;
+        } else {
+            eggCooldown--;
+        }
+
+        if (hunger <= 0 || thirst <= 0) {
+            health -= 5;
+        }
+
+        wander(1);
+    }
+
+    private void layEgg() {
+        Egg egg = new Egg(new Point(position.x, position.y), gameWorld);
+        gameWorld.addEgg(egg);
     }
 }

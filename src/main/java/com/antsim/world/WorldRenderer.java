@@ -1,9 +1,16 @@
 package com.antsim.world;
 
 import com.antsim.creatures.Creature;
+
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
+
+import com.antsim.creatures.ants.BuilderAnt;
+import com.antsim.creatures.ants.Egg;
+import com.antsim.creatures.ants.NurseAnt;
 import com.antsim.creatures.ants.QueenAnt;
+import com.antsim.creatures.ants.SoldierAnt;
+import com.antsim.creatures.ants.WorkerAnt;
 import com.antsim.creatures.enemies.Spider;
 
 
@@ -77,10 +84,20 @@ public class WorldRenderer {
 
     private String getCreatureSymbol(Creature creature) {
         if (creature instanceof QueenAnt) {
-            return "Q "; // Матка
+            return "QA"; // Матка
+        } else if (creature instanceof BuilderAnt) {
+            return "BA"; // Враг
+        } else if (creature instanceof NurseAnt) {
+            return "NA"; // Враг
+        } else if (creature instanceof SoldierAnt) {
+            return "SA"; // Враг
+        } else if (creature instanceof WorkerAnt) {
+            return "WA"; // Враг
         } else if (creature instanceof Spider) {
-            return "S "; // Враг
-        }
+            return "SE"; // Враг
+        } else if (creature instanceof Egg) {
+            return "EG"; // Враг
+        } 
         return "? "; // Другие существа
     }
 }

@@ -2,14 +2,15 @@ package com.antsim.creatures;
 import java.awt.Point;
 import java.util.Random;
 
-import javax.swing.text.Position;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public abstract class Creature {
-    protected float health;
-    protected float attack;
-    protected float defense;
-    protected Point position = new Point();
+    protected @Getter @Setter float health;
+    protected @Getter @Setter float attack;
+    protected @Getter @Setter float defense;
+    protected @Getter @Setter Point position = new Point();
     protected Random random = new Random();
 
     // Базовое обновление (движение + другие действия)
@@ -35,13 +36,5 @@ public abstract class Creature {
             // Продолжаем движение в текущем направлении
             moveTo(new Point(position.x + 1, position.y + 1), speed);
         }
-    }
-
-    public float getHealth() {
-        return this.health;
-    }
-
-    public Point getPosition() {
-        return this.position;
     }
 }

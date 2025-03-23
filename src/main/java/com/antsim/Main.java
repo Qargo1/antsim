@@ -7,7 +7,7 @@ import com.antsim.world.WorldRenderer;
 
 public class Main {
     public static void main(String[] args) {
-        WorldMap map = new WorldMap(40, 20);
+        WorldMap map = new WorldMap(100, 20);
         WorldRenderer renderer = new WorldRenderer();
         GameWorld gameWorld = new GameWorld();
 
