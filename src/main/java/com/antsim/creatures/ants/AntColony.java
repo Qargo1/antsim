@@ -32,11 +32,11 @@ public class AntColony{
 
     public void updateStats(Ant ant) {
         if (ant.getHunger() < 30) {
-            ant.setAttack(0.8);
-            ant.setDefense(0.8);
+            ant.setAttack(ant.getAttack() * 0.8f);
+            ant.setDefense(ant.getDefense() * 0.8f);
         } 
         if (ant.getHunger() <= 0) {
-            ant.setHealth(-5);
+            ant.setHealth(ant.getHealth() - 5);
         }
     }
 }

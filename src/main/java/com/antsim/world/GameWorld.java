@@ -4,11 +4,13 @@ import com.antsim.creatures.Creature;
 import com.antsim.creatures.ants.Egg;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 
 public class GameWorld {
-    private List<Creature> creatures = new ArrayList<>();
-    private List<Egg> eggs = new ArrayList<>();
+    private @Getter @Setter List<Creature> creatures = new ArrayList<>();
+    private @Getter @Setter List<Egg> eggs = new ArrayList<>();
 
     public void addCreature(Creature creature) {
         creatures.add(creature);
@@ -24,9 +26,5 @@ public class GameWorld {
         
         creatures.forEach(Creature::update);
         creatures.removeIf(creature -> creature.getHealth() <= 0);
-    }
-
-    public List<Creature> getCreatures() {
-        return creatures;
     }
 }

@@ -18,16 +18,18 @@ public class Egg extends Creature{
     private GameWorld gameWorld;
 
     public Egg(Point position, GameWorld gameWorld) {
+        super();
         this.position = position;
         this.gameWorld = gameWorld;
         this.hatchTimer = random.nextInt(10) + 10;
-        this.antType = generateAntType();
     }
 
     @Override
     public void update() {
         hatchTimer--;
         if (hatchTimer <= 0) hatch();
+
+        this.health -= 0.1;
     }
 
     private void hatch() {

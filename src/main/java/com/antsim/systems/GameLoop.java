@@ -2,11 +2,11 @@ package com.antsim.systems;
 
 import java.awt.Point;
 import java.util.Random;
+
+import com.antsim.creatures.ants.QueenAntRival;
 import com.antsim.creatures.ants.QueenAnt;
-import com.antsim.creatures.enemies.Spider;
-import com.antsim.world.WorldMap;
-import com.antsim.world.GameWorld;
-import com.antsim.world.WorldRenderer;
+import com.antsim.creatures.enemies.*;
+import com.antsim.world.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,12 +15,16 @@ public class GameLoop {
     private WorldMap map;
     private WorldRenderer renderer;
     private GameWorld gameWorld;
+    private long lastStatsUpdate = 0;
     private @Getter @Setter boolean isRunning;
     private long lastSpawnTime;
     private QueenAnt queen;
+    private QueenAntRival queenAntRival;
     private Random random = new Random();
+    private SplitMap splitMap;
 
-    public GameLoop(WorldMap map, WorldRenderer renderer, GameWorld gameWorld) {
+    public GameLoop(WorldMap map, WorldRenderer renderer, GameWorld gameWorld, SplitMap splitMap) {
+        this.splitMap = splitMap;
         this.map = map;
         this.renderer = renderer;
         this.gameWorld = gameWorld;
@@ -31,10 +35,18 @@ public class GameLoop {
     public void start() {
         spawnQueenAnt();
 
+        if (System.currentTimeMillis() >= 300_00) {
+            spawnAntQueenRival();
+        }
+
         while (isRunning) {
             clearConsole();
             update();
             renderer.drawMap(map, gameWorld);
+            if (System.currentTimeMillis() - lastStatsUpdate > 2000) {
+                StatsRenderer.drawStats(gameWorld);
+                lastStatsUpdate = System.currentTimeMillis();
+            }
             checkQueenHealth();
             sleep(1000);
         }
@@ -51,8 +63,16 @@ public class GameLoop {
                 random.nextInt(map.getWidth()),
                 random.nextInt(map.getHeight())
             );
-            Spider spider = new Spider(spawnPoint);
-            gameWorld.addCreature(spider);
+            EnemyType type = EnemyType.getRandomType(); // Логика выбора на основе шансов
+            Enemy enemy = switch(type) {
+                case SPIDER -> new Spider(spawnPoint); 
+                case WASP -> new Wasp();
+                case BEETLE -> new Beetle(); 
+                case RHINOBEETLE -> new RhinoBeetle(); 
+                case ANTLION -> new Antlion(); 
+                // ...
+            };
+            gameWorld.addCreature(enemy);
             lastSpawnTime = System.currentTimeMillis();
         }
     }
@@ -60,6 +80,13 @@ public class GameLoop {
     private void spawnQueenAnt() {
         Point spawnPoint = new Point(map.getWidth() / 2, map.getHeight() / 2);
         queen = new QueenAnt(spawnPoint, gameWorld);
+        gameWorld.addCreature(queen);
+    }
+
+    private void spawnAntQueenRival() {
+        // Изменить
+        Point spawnPoint = new Point(map.getWidth() / 2, map.getHeight() / 2);
+        queenAntRival = new QueenAntRival(spawnPoint, gameWorld);
         gameWorld.addCreature(queen);
     }
 

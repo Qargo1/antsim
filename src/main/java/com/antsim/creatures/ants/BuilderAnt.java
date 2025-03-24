@@ -3,6 +3,7 @@ package com.antsim.creatures.ants;
 import java.awt.Point;
 import java.util.Random;
 
+
 public class BuilderAnt extends Ant {
     private static final Random random = new Random();
 

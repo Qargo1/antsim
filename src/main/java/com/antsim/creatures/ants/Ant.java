@@ -1,35 +1,42 @@
 package com.antsim.creatures.ants;
 import com.antsim.creatures.Creature;
 
+import com.antsim.world.worldItems.*;
 import java.util.Random;
 import lombok.Getter;
+import lombok.Setter;
 
 
 public abstract class Ant extends Creature{
     protected Random random = new Random();
-    protected @Getter float hunger;
-    protected @Getter float thirst;
-    protected @Getter String antType;
+    protected boolean foodIsLoaded;
+    protected @Getter float foodCapacity;
+    protected @Setter @Getter float hunger;
+    protected @Setter @Getter float thirst;
 
-    public Ant(Float attack, Float defense, String antType) {
+    public Ant(Float attack, Float defense, String type) {
         super();
         float[] stats = this.generateStats();
         this.attack = attack;
         this.defense = defense;
+        this.type = type;
         this.health = stats[2];
         this.hunger = stats[3];
         this.thirst = stats[4];
-        this.antType = antType;
+        this.foodIsLoaded = false;
+        this.foodCapacity = 0;
     }
 
-    public Ant(String antType) {
+    public Ant(String type) {
         float[] stats = this.generateStats();
         this.attack = stats[0];
         this.defense = stats[1];
         this.health = stats[2];
         this.hunger = stats[3];
         this.thirst = stats[4];
-        this.antType = antType;
+        this.type = type;
+        this.foodIsLoaded = false;
+        this.foodCapacity = 0;
     }
 
     private float[] generateStats() {
@@ -40,27 +47,34 @@ public abstract class Ant extends Creature{
         return stats;
     }
 
-    public void setHealth(double multiplayer) {
-        this.health *= multiplayer;
+    public void setFoodCapacity(float capacity) {
+        if (capacity >=0) {
+            this.foodIsLoaded = true;
+            foodCapacity = capacity;
+        }
     }
 
-    public void setAttack(double multiplayer) {
-        this.attack *= multiplayer;
+    public void waterCarried(Water water) {
     }
 
-    public void setDefense(double multiplayer) {
-        this.defense *= multiplayer;
-    }
-
-    public void setHunger(int multiplayer) {
-        this.hunger += multiplayer;
-    }
-
-    public void setThirst(int multiplayer) {
-        this.thirst += multiplayer;
+    public void stuffCarried(Stuff stuff) {
     }
 
     // abstract must go before void
     @Override
-    public abstract void update();
+    public void update() {
+        if (this.foodIsLoaded) {
+            if (this.getHealth() < 100) {
+                float healthNeeded = 100 - this.getHealth();
+                if (this.getFoodCapacity() > healthNeeded) {
+                    this.setHealth(healthNeeded);
+                    this.setFoodCapacity(this.getFoodCapacity() - healthNeeded);
+                    // this.shareFood(nearbyAnt);
+                } else if (this.getFoodCapacity() < healthNeeded) {
+                    this.setHealth(this.getFoodCapacity());
+                    this.foodIsLoaded = false;
+                }
+            }
+        }
+    }
 }

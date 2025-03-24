@@ -1,11 +1,15 @@
 package com.antsim.world;
 
 import java.util.Random;
+import lombok.Getter;
+import lombok.Setter;
+
 
 public class WorldMap {
-    private TileType[][] tiles;
-    private int width;
-    private int height;
+    private @Getter @Setter TileType[][] tiles;
+    private @Getter @Setter int width;
+    private @Getter @Setter int height;
+    private int[] zones = new int[3]; // [0] верх, [1] середина, [2] низ
     private Random random = new Random();
 
     public WorldMap(int width, int height) {
@@ -13,6 +17,9 @@ public class WorldMap {
         this.height = height;
         tiles = new TileType[width][height];
         generateInitialMap();
+        this.zones[0] = height/3;   // Вражеский муравейник
+        this.zones[1] = height*2/3; // Лес
+        this.zones[2] = height;     // Игровой муравейник
     }
 
     private void generateInitialMap() {
@@ -63,14 +70,24 @@ public class WorldMap {
         if (isDiggable(x, y)) {
             tiles[x][y] = TileType.TUNNEL;
         }
+
+        /*
+        if (this.areTunnelsParallel(t1, t2)) {
+            this.collapse();
+        } */
     }
 
-    public int getHeight() {
-        return height;
+    public void getWallsAround() {
+        // Найдем угол (с двух сторон стены)
+        // Пройдем в одну сторону n шагов - уперлись в угол - запомнили
+        // Повернули идем дальше по углу - уперлись в угол - запомнили
+        // Сделали еще раз, запомнили - мы в коробке. Остаемся здесь некоторое время запомнив общую площадь.
+        // Начнем рандомное движение в цели найти другую каробку, не равную этой по площади (нашли меньше остались ненадолго, если площадь больше ищем дальше)
+        // И все это в пределах центральных 80% самого муравейника
     }
 
-    public int getWidth() {
-        return width;
+    public void exitPosition() {
+        // Найти все границы карты, где нету стены.
     }
 
     public TileType getTile(int x, int y) {

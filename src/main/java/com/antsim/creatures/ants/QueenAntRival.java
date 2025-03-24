@@ -7,13 +7,13 @@ import com.antsim.world.GameWorld;
 import com.antsim.world.WorldMap;
 
 
-public class QueenAnt extends Ant {
+public class QueenAntRival extends Ant {
     private static final Random random = new Random();
     private int eggCooldown;
     private GameWorld gameWorld;
     private WorldMap map;
 
-    public QueenAnt(Point position, GameWorld gameWorld) {
+    public QueenAntRival(Point position, GameWorld gameWorld) {
         super(
             random.nextFloat() * 20 + 10, // 10-30
             random.nextFloat() * 10 + 80,  // 80-90
@@ -25,7 +25,7 @@ public class QueenAnt extends Ant {
         this.gameWorld = gameWorld;
     }
 
-    public QueenAnt(Point position) {
+    public QueenAntRival(Point position) {
         super(
             random.nextFloat() * 20 + 10, // 10-30
             random.nextFloat() * 10 + 80,  // 80-90
@@ -54,7 +54,7 @@ public class QueenAnt extends Ant {
 
         wander(1);
 
-        // this.findSafeSpot(map.getWallsAround(this.position));
+        //map.findSafeSpot(map.getWallsAround(this.position));
     }
 
     private void layEgg() {

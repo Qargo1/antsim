@@ -1,4 +1,4 @@
-package com.antsim.creatures.TamedAnimals;
+package com.antsim.creatures.tamedAnimals;
 import com.antsim.creatures.Creature;
 
 

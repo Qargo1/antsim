@@ -3,17 +3,21 @@ package com.antsim.creatures.enemies;
 import java.awt.Point;
 
 public class Spider extends Enemy {
-    public Spider(Point position) {
-        this.health = 120;
-        this.attack = 30;
-        this.defense = 10;
-        this.moveSpeed = 2.5f;
-        this.isHostile = true;
-
-        this.position = position;
+    public Spider() {
         this.health = 50;
-        this.attack = 20;
-        this.defense = 10;
+        this.attack = 15;
+        this.defense = 15;
+        this.moveSpeed = 1.5f;
+        this.isHostile = true;
+    }
+
+    public Spider(Point position) {
+        super(position);
+        this.health = 50;
+        this.attack = 15;
+        this.defense = 15;
+        this.moveSpeed = 1.5f;
+        this.isHostile = true;
     }
 
     @Override
