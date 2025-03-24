@@ -2,28 +2,13 @@ package com.antsim.creatures.ants;
 
 import java.awt.Point;
 import java.util.Random;
-
-import com.antsim.world.GameWorld;
 import com.antsim.world.WorldMap;
 
 
 public class QueenAntRival extends Ant {
     private static final Random random = new Random();
     private int eggCooldown;
-    private GameWorld gameWorld;
     private WorldMap map;
-
-    public QueenAntRival(Point position, GameWorld gameWorld) {
-        super(
-            random.nextFloat() * 20 + 10, // 10-30
-            random.nextFloat() * 10 + 80,  // 80-90
-            "queen"
-        );
-        this.position = position;
-        this.health = 100;
-        this.eggCooldown = random.nextInt(20) + 10;
-        this.gameWorld = gameWorld;
-    }
 
     public QueenAntRival(Point position) {
         super(
@@ -42,7 +27,7 @@ public class QueenAntRival extends Ant {
         thirst -= 0.3f;
 
         if (eggCooldown <= 0) {
-            layEgg();
+            layEgg(this.position.x+1, this.position.y+1);
             eggCooldown = random.nextInt(20) + 10;
         } else {
             eggCooldown--;
@@ -54,11 +39,11 @@ public class QueenAntRival extends Ant {
 
         wander(1);
 
-        //map.findSafeSpot(map.getWallsAround(this.position));
+        // this.findSafeSpot(map.getWallsAround(this.position));
     }
 
-    private void layEgg() {
-        Egg egg = new Egg(new Point(position.x, position.y), gameWorld);
-        gameWorld.addEgg(egg);
+    private void layEgg(int x, int y) {
+        Egg egg = new Egg(new Point(x, y), antManager);
+        antManager.addEgg(egg);
     }
 }

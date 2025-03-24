@@ -13,6 +13,7 @@ public abstract class Ant extends Creature{
     protected @Getter float foodCapacity;
     protected @Setter @Getter float hunger;
     protected @Setter @Getter float thirst;
+    protected AntManager antManager;
 
     public Ant(Float attack, Float defense, String type) {
         super();
@@ -49,7 +50,7 @@ public abstract class Ant extends Creature{
 
     public void setFoodCapacity(float capacity) {
         if (capacity >=0) {
-            this.foodIsLoaded = true;
+            foodIsLoaded = true;
             foodCapacity = capacity;
         }
     }
@@ -63,16 +64,16 @@ public abstract class Ant extends Creature{
     // abstract must go before void
     @Override
     public void update() {
-        if (this.foodIsLoaded) {
-            if (this.getHealth() < 100) {
-                float healthNeeded = 100 - this.getHealth();
-                if (this.getFoodCapacity() > healthNeeded) {
-                    this.setHealth(healthNeeded);
-                    this.setFoodCapacity(this.getFoodCapacity() - healthNeeded);
+        if (foodIsLoaded) {
+            if (health < 100) {
+                float healthNeeded = 100 - health;
+                if (foodCapacity > healthNeeded) {
+                    health = healthNeeded;
+                    foodCapacity = foodCapacity - healthNeeded;
                     // this.shareFood(nearbyAnt);
-                } else if (this.getFoodCapacity() < healthNeeded) {
-                    this.setHealth(this.getFoodCapacity());
-                    this.foodIsLoaded = false;
+                } else if (foodCapacity < healthNeeded) {
+                    health = foodCapacity;
+                    foodIsLoaded = false;
                 }
             }
         }

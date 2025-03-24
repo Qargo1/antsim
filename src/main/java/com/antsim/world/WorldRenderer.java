@@ -4,7 +4,8 @@ import com.antsim.creatures.Creature;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 import com.antsim.creatures.ants.*;
-import com.antsim.creatures.enemies.Spider;
+import com.antsim.creatures.enemies.*;
+import com.antsim.systems.GameEngine;
 
 
 public class WorldRenderer {
@@ -14,22 +15,26 @@ public class WorldRenderer {
 
     private int[] zones;
 
-    public WorldRenderer(SplitMap splitMap) {
-        this.zones = splitMap.getZones();
+    public WorldRenderer(WorldMap map) {
+        this.zones = map.getZones();
     }
 
-    public void drawMap(WorldMap map, GameWorld gameWorld) {
+    public void drawMap(WorldMap map, GameEngine engine) {
         Ansi buffer = Ansi.ansi();
 
         for (int y = 0; y < map.getHeight(); y++) {
             for (int x = 0; x < map.getWidth(); x++) {
-                Creature creature = getCreatureAt(gameWorld, x, y);
+                Creature creature = getCreatureAt(engine, x, y);
 
                 if (creature != null) {
-                    buffer.a(getCreatureSymbol(creature)).fg(getCreatureColor(creature));
+                    buffer.a(getCreatureSymbol(creature))
+                        .fg(getCreatureColor(creature))
+                        .fgDefault();
                 } else {
                     TileType tile = map.getTile(x, y);
-                    buffer.a(getTileSymbol(tile, y)).fg(getTileColor(tile));
+                    buffer.a(getTileSymbol(tile, y))
+                        .fg(getTileColor(tile))
+                        .fgDefault(); // сброс цвета
                 }
             }
             buffer.newline();
@@ -38,8 +43,8 @@ public class WorldRenderer {
         System.out.println(buffer);
     }
 
-    private Creature getCreatureAt(GameWorld gameWorld, int x, int y) {
-        for (Creature creature : gameWorld.getCreatures()) {
+    private Creature getCreatureAt(GameEngine engine, int x, int y) {
+        for (Creature creature : engine.getCreatures()) {
             if (creature.getPosition().x == x && creature.getPosition().y == y) {
                 return creature;
             }
@@ -67,7 +72,8 @@ public class WorldRenderer {
             case GROUND -> "░░";
             case WATER -> "~~";
             case FOOD -> "🍎";
-            default -> "??";
+            case BORDER -> "▧";
+            case EXIT -> " ";
         };
     }
 
@@ -93,9 +99,17 @@ public class WorldRenderer {
             return "WA"; // Враг
         } else if (creature instanceof Spider) {
             return "SE"; // Враг
+        } else if (creature instanceof Antlion) {
+            return "AE";
+        } else if (creature instanceof Beetle) {
+            return "BE";
+        } else if (creature instanceof RhinoBeetle) {
+            return "RE";
+        } else if (creature instanceof Wasp) {
+            return "WE";
         } else if (creature instanceof Egg) {
             return "EG"; // Враг
-        } 
+        }
         return "? "; // Другие существа
     }
 }

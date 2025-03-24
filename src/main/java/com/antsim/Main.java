@@ -1,18 +1,16 @@
 package com.antsim;
 
-import com.antsim.systems.GameLoop;
+import com.antsim.systems.GameEngine;
 import com.antsim.world.*;
 
 
 public class Main {
     public static void main(String[] args) {
-        SplitMap splitMap = new SplitMap(20, 40, 60, 100); // Пример значений
-        WorldRenderer renderer = new WorldRenderer(splitMap);
-        WorldMap map = new WorldMap(100, 20);
-        GameWorld gameWorld = new GameWorld();
+        WorldMap map = new WorldMap(30, 30);
+        WorldRenderer renderer = new WorldRenderer(map);
 
         // Создаем игровой цикл
-        GameLoop gameLoop = new GameLoop(map, renderer, gameWorld, splitMap);
+        GameEngine gameLoop = new GameEngine(map, renderer);
 
         // Запуск игры
         gameLoop.start();

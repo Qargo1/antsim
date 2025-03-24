@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.Random;
 
 import com.antsim.creatures.Creature;
-import com.antsim.world.GameWorld;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,15 +11,15 @@ import lombok.Setter;
 
 public class Egg extends Creature{
     private static final Random random = new Random();
+    private final AntManager antManager; // Добавляем ссылку
     private @Getter @Setter int hatchTimer;
     private @Getter @Setter Point position;
     private @Getter @Setter String antType;
-    private GameWorld gameWorld;
 
-    public Egg(Point position, GameWorld gameWorld) {
+    public Egg(Point position, AntManager antManager) {
         super();
+        this.antManager = antManager;
         this.position = position;
-        this.gameWorld = gameWorld;
         this.hatchTimer = random.nextInt(10) + 10;
     }
 
@@ -33,8 +32,8 @@ public class Egg extends Creature{
     }
 
     private void hatch() {
-        Ant newAnt = AntFactory.createAnt(antType, position);
-        gameWorld.addCreature(newAnt);
+        Ant newAnt = antManager.createAnt(generateAntType(), position);
+        antManager.addAnt(newAnt);
     }
 
     private String generateAntType() {

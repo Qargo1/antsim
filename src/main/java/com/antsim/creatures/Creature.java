@@ -1,10 +1,9 @@
 package com.antsim.creatures;
+
 import java.awt.Point;
 import java.util.Random;
-
 import com.antsim.creatures.ants.WorkerAnt;
 import com.antsim.world.WorldMap;
-
 import lombok.Getter;
 import lombok.Setter;
 

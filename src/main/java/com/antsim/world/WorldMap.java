@@ -9,33 +9,51 @@ public class WorldMap {
     private @Getter @Setter TileType[][] tiles;
     private @Getter @Setter int width;
     private @Getter @Setter int height;
-    private int[] zones = new int[3]; // [0] верх, [1] середина, [2] низ
     private Random random = new Random();
+
+    // Зонирование карты
+    private int[] zones; // [0] верх (вражеский муравейник), [1] середина (лес), [2] низ (игровой муравейник)
+    private @Getter int playerAnthillY1;
+    private @Getter int playerAnthillY2;
 
     public WorldMap(int width, int height) {
         this.width = width;
         this.height = height;
-        tiles = new TileType[width][height];
+        this.tiles = new TileType[width][height];
+
+        // Инициализация зон
+        this.zones = new int[] {
+            height/3,    // Вражеский муравейник
+            height*2/3,  // Лес
+            height       // Игровой муравейник
+        };
+
+        this.playerAnthillY1 = height * 2/3;
+        this.playerAnthillY2 = height - 1;
+
         generateInitialMap();
-        this.zones[0] = height/3;   // Вражеский муравейник
-        this.zones[1] = height*2/3; // Лес
-        this.zones[2] = height;     // Игровой муравейник
+    }
+
+    public int[] getZones() {
+        return this.zones;
     }
 
     private void generateInitialMap() {
-        // Размеры муравейника (40% от карты)
-        int anthillWidth = (int) (width * 0.4);
-        int anthillHeight = (int) (height * 0.4);
-
         // Центр муравейника
-        int centerX = width / 2;
+        int centerX = (width -1) / 2;
         int centerY = height / 2;
 
         // Границы муравейника
-        int anthillStartX = centerX - anthillWidth / 2;
-        int anthillStartY = centerY - anthillHeight / 2;
-        int anthillEndX = anthillStartX + anthillWidth;
-        int anthillEndY = anthillStartY + anthillHeight;
+        int anthillStartX = centerX / 2;
+        int anthillStartY = zones[1]; // Начинается от границы леса
+        int anthillEndX = Math.min(anthillStartX, width - 1); // защита от выхода
+        int anthillEndY = zones[2];   // До конца карты
+
+        for (int y = anthillStartY; y < anthillEndY; y++) {
+            for (int x = 0; x < width; x++) {
+                tiles[x][y] = TileType.WALL; // Стены муравейника
+            }
+        }
 
         // Заполняем карту
         for (int x = 0; x < width; x++) {
@@ -43,7 +61,6 @@ public class WorldMap {
                 // Если внутри муравейника
                 if (x >= anthillStartX && x < anthillEndX && 
                     y >= anthillStartY && y < anthillEndY) {
-                    tiles[x][y] = TileType.WALL; // Стены муравейника
                 } else {
                     tiles[x][y] = TileType.GROUND; // Трава снаружи
                 }
@@ -92,7 +109,7 @@ public class WorldMap {
 
     public TileType getTile(int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height) {
-            return TileType.WALL; // Границы карты
+            return TileType.BORDER;
         }
         return tiles[x][y];
     }
